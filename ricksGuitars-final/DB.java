@@ -50,8 +50,8 @@ public class DB {
 			state.setString(2, guitar.spec.getModel().toString());
 			state.setString(3, guitar.spec.getType().toString());
 			state.setInt(4, guitar.spec.getNumStrings());
-			state.setString(5, guitar.spec.getBackWood().toString());
-			state.setString(6, guitar.spec.getTopWood().toString());
+			state.setString(6, guitar.spec.getBackWood().toString());
+			state.setString(5, guitar.spec.getTopWood().toString());
 			System.out.println("로드 완료");
 
 		} catch (SQLException e) {
@@ -61,13 +61,14 @@ public class DB {
 
 	public void Search(GuitarSpec spec) {
 		String sql = "SELECT * FROM rick_store WHERE " + 
-				"builder=" + spec.getBuilder() + 
-				"AND" + "model=" + spec.getModel()+ 
-				"AND" + "type=" + spec.getType() + 
-				"AND" +"numStrings=" + spec.getNumStrings()+
-				"AND" + "backWood=" +spec.getBackWood()+
-				"AND" + "topWood="+spec.getTopWood();
+				"builder IN ('" + spec.getBuilder() + "')" +
+				" AND " + "model IN ('" + spec.getModel()+"')" +
+				" AND " + "type IN ('" + spec.getType() + "')" +
+				" AND " +"numStrings IN ('" + spec.getNumStrings()+"')" +
+				" AND " + "backWood IN ('" +spec.getBackWood()+"')" +
+				" AND " + "topWood IN ('"+spec.getTopWood()+"')" ;
 		//mysql 비교문 GuitarSpec의 matching 과 동일한 함수 잘 동작하면 map 타입으로 변환
+		System.out.println(sql);
 	}
 	public void Close() {
 				try {

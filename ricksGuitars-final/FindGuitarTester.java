@@ -9,8 +9,11 @@ public class FindGuitarTester {
 		initializeInventory(inventory);
 
 		DB database = new DB();// DB¿¬°á
-		database.Insert(new Guitar("11277", 3999.95,
-				new GuitarSpec(Builder.COLLINGS, "CJ", Type.ACOUSTIC, 6, Wood.INDIAN_ROSEWOOD, Wood.SITKA)));
+
+		//database.Insert(new Guitar("11277", 3999.95,
+			//	new GuitarSpec(Builder.COLLINGS, "CJ", Type.ACOUSTIC, 6, Wood.INDIAN_ROSEWOOD, Wood.SITKA)));
+
+		database.Search(new GuitarSpec(Builder.COLLINGS, "CJ", Type.ACOUSTIC, 6, Wood.INDIAN_ROSEWOOD, Wood.SITKA));
 
 		GuitarSpec whatErinLikes = new GuitarSpec(Builder.FENDER, "Stratocastor", Type.ELECTRIC, 6, Wood.ALDER,
 				Wood.ALDER);
