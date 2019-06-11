@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.Queue;
 
 import com.sun.javafx.collections.MappingChange.Map;
 
@@ -62,8 +63,9 @@ public class DB {
 		}
 	}
 
-	public void Search(GuitarSpec spec) {
+	public Queue<Guitar> Search(GuitarSpec spec) {
 		ResultSet result = null;
+		Queue<Guitar> temp = null;
 		String sql = "SELECT * FROM rick_store WHERE " + "builder IN ('" + spec.getBuilder() + "')" + " AND "
 				+ "model IN ('" + spec.getModel() + "')" + " AND " + "type IN ('" + spec.getType() + "')" + " AND "
 				+ "numStrings IN ('" + spec.getNumStrings() + "')" + " AND " + "backWood IN ('" + spec.getBackWood()
@@ -74,21 +76,23 @@ public class DB {
 		try {
 			result = state.executeQuery(sql);
 			while (result.next()) {
-				//guitar = new Guitar(result.getString(8),result.getDouble(7),new GuitarSpec(result.getString(1),result.getString(2),result.getString(3),result.getInt(4),result.getString(5),result.getString(6)));
-				/*result.getString(1);// builder
-				result.getString(2);// model
-				result.getString(3);//type
-				result.getInt(4);//numString
-				result.getString(5);//topWood
-				result.getString(6);//BackWood
-				result.getDouble(7);//price
-				result.getString(8);//serialNumber*/
+				temp.add(new Guitar(result.getString(8), result.getDouble(7),
+						new GuitarSpec(toBuilder(result.getString(1)), result.getString(2), toType(result.getString(3)),
+								result.getInt(4), toWood(result.getString(5)), toWood(result.getString(6)))));
+//
+//				result.getString(1);// builder
+//				result.getString(2);// model
+//				result.getString(3);// type
+//				result.getInt(4);// numString
+//				result.getString(5);// topWood
+//				result.getString(6);// BackWood
+//				result.getDouble(7);// price
+//				result.getString(8);// serialNumber
 			}
-			//enum 타입 없애 버리자...! 그래도 되는지는 모르겠지만
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
+		return temp;
 	}
 
 	public void Close() {
@@ -98,6 +102,67 @@ public class DB {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+
+	// 타입변환
+	public Wood toWood(String str) {
+		switch (str) {
+		case "Indian Rosewood":
+			return Wood.INDIAN_ROSEWOOD;
+		case "Brazilian Rosewood":
+			return Wood.BRAZILIAN_ROSEWOOD;
+		case "Mahogany":
+			return Wood.MAHOGANY;
+		case "Maple":
+			return Wood.MAPLE;
+		case "Cocobolo":
+			return Wood.COCOBOLO;
+		case "Cedar":
+			return Wood.CEDAR;
+		case "Adirondack":
+			return Wood.ADIRONDACK;
+		case "Alder":
+			return Wood.ALDER;
+		case "Sitka":
+			return Wood.SITKA;
+		default:
+			return null;
+
+		}
+	}
+
+	public GType toType(String str) {
+		switch (str) {
+		case "acoustic":
+			return GType.ACOUSTIC;
+		case "electric":
+			return GType.ELECTRIC;
+
+		default:
+			return null;
+
+		}
+	}
+
+	public Builder toBuilder(String str) {
+		switch (str) {
+		case "Fender":
+			return Builder.FENDER;
+		case "Martin":
+			return Builder.MARTIN;
+		case "Gibson":
+			return Builder.GIBSON;
+		case "Collings":
+			return Builder.COLLINGS;
+		case "Olson":
+			return Builder.OLSON;
+		case "Ryan":
+			return Builder.RYAN;
+		case "PRS":
+			return Builder.PRS;
+		default:
+			return null;
 		}
 	}
 

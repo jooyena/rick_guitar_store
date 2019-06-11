@@ -30,10 +30,8 @@ public class RickSotreGUI extends JFrame {
 	private JLabel downwoodLabel;
 	private JLabel priceLabel;
 	private JLabel serialnumberLabel;
+	private DB database;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -47,9 +45,6 @@ public class RickSotreGUI extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public RickSotreGUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 761, 565);
@@ -57,12 +52,43 @@ public class RickSotreGUI extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+
+		database = new DB();// DB¿­À½
+		initializeInventory(database);
+
 		new start();
 
 	}
 
+	private static void initializeInventory(DB database) {
+		database.Insert(new Guitar("11277", 3999.95,
+				new GuitarSpec(Builder.COLLINGS, "CJ", GType.ACOUSTIC, 6, Wood.INDIAN_ROSEWOOD, Wood.SITKA)));
+
+		database.Insert(new Guitar("V95693", 1499.95,
+				new GuitarSpec(Builder.FENDER, "Stratocastor", GType.ELECTRIC, 6, Wood.ALDER, Wood.ALDER)));
+		database.Insert(new Guitar("V9512", 1549.95,
+				new GuitarSpec(Builder.FENDER, "Stratocastor", GType.ELECTRIC, 6, Wood.ALDER, Wood.ALDER)));
+		database.Insert(new Guitar("122784", 5495.95,
+				new GuitarSpec(Builder.MARTIN, "D-18", GType.ACOUSTIC, 6, Wood.MAHOGANY, Wood.ADIRONDACK)));
+		database.Insert(new Guitar("76531", 6295.95,
+				new GuitarSpec(Builder.MARTIN, "OM-28", GType.ACOUSTIC, 6, Wood.BRAZILIAN_ROSEWOOD, Wood.ADIRONDACK)));
+		database.Insert(new Guitar("70108276", 2295.95,
+				new GuitarSpec(Builder.GIBSON, "Les Paul", GType.ELECTRIC, 6, Wood.MAHOGANY, Wood.MAHOGANY)));
+		database.Insert(new Guitar("82765501", 1890.95,
+				new GuitarSpec(Builder.GIBSON, "SG '61 Reissue", GType.ELECTRIC, 6, Wood.MAHOGANY, Wood.MAHOGANY)));
+		database.Insert(new Guitar("77023", 6275.95,
+				new GuitarSpec(Builder.MARTIN, "D-28", GType.ACOUSTIC, 6, Wood.BRAZILIAN_ROSEWOOD, Wood.ADIRONDACK)));
+		database.Insert(new Guitar("1092", 12995.95,
+				new GuitarSpec(Builder.OLSON, "SJ", GType.ACOUSTIC, 12, Wood.INDIAN_ROSEWOOD, Wood.CEDAR)));
+		database.Insert(new Guitar("566-62", 8999.95,
+				new GuitarSpec(Builder.RYAN, "Cathedral", GType.ACOUSTIC, 12, Wood.COCOBOLO, Wood.CEDAR)));
+		database.Insert(new Guitar("6 29584", 2100.95,
+				new GuitarSpec(Builder.PRS, "Dave Navarro Signature", GType.ELECTRIC, 6, Wood.MAHOGANY, Wood.MAPLE)));
+	}
+
 	public class start {
 		public start() {
+
 			JPanel startPanel = new JPanel();
 			startPanel.setBounds(14, 27, 715, 479);
 			contentPane.add(startPanel);
@@ -84,15 +110,14 @@ public class RickSotreGUI extends JFrame {
 	}
 
 	public void change(String paneName) {
-		
+
 		if (paneName.equals("ADD")) {
 			MainPanel panel = new MainPanel();
 			getContentPane().removeAll();
 			getContentPane().add(panel);
 			revalidate();
 			repaint();
-		}
-		else {
+		} else {
 			MainPanel panel = new MainPanel();
 			panel.remove(priceLabel);
 			panel.remove(price);
@@ -190,4 +215,5 @@ public class RickSotreGUI extends JFrame {
 		}
 
 	}
+
 }
