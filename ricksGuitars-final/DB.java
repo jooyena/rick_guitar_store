@@ -1,7 +1,10 @@
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Queue;
 
 import com.sun.javafx.collections.MappingChange.Map;
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 /*
 --------------+-------------+------+-----+---------+-------+
@@ -40,6 +43,21 @@ public class DB {
 		}
 	}
 
+	public void Open() {
+		try {
+
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			String url = "jdbc:mysql://localhost/rick_store?serverTimezone=UTC";
+			conn = DriverManager.getConnection(url, "root", "125710");
+
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 로딩 실패");
+		} catch (SQLException e) {
+			System.out.println("에러: " + e);
+		}
+	}
+
 	public void Insert(Guitar guitar) {
 		String sql = "INSERT INTO rick_store VALUES(?,?,?,?,?,?,?,?)";
 		try {
@@ -55,30 +73,36 @@ public class DB {
 			state.setInt(4, guitar.spec.getNumStrings());
 			state.setString(5, guitar.spec.getTopWood().toString());
 			state.setString(6, guitar.spec.getBackWood().toString());
-
-			System.out.println("로드 완료");
+			state.executeUpdate();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public Queue<Guitar> Search(GuitarSpec spec) {
-		ResultSet result = null;
-		Queue<Guitar> temp = null;
+	@SuppressWarnings("unchecked")
+	public LinkedList Search(GuitarSpec spec) {
+		LinkedList list = new LinkedList();
 		String sql = "SELECT * FROM rick_store WHERE " + "builder IN ('" + spec.getBuilder() + "')" + " AND "
 				+ "model IN ('" + spec.getModel() + "')" + " AND " + "type IN ('" + spec.getType() + "')" + " AND "
 				+ "numStrings IN ('" + spec.getNumStrings() + "')" + " AND " + "backWood IN ('" + spec.getBackWood()
 				+ "')" + " AND " + "topWood IN ('" + spec.getTopWood() + "')";
-		// mysql 비교문 GuitarSpec의 matching 과 동일한 함수 잘 동작하면 map 타입으로 변환
-		// System.out.println(sql);
-		Guitar guitar;
+//		System.out.println(sql);
 		try {
-			result = state.executeQuery(sql);
+			state = conn.prepareStatement(sql);
+			
+			ResultSet result = state.executeQuery(sql);
+
+
 			while (result.next()) {
-				temp.add(new Guitar(result.getString(8), result.getDouble(7),
-						new GuitarSpec(toBuilder(result.getString(1)), result.getString(2), toType(result.getString(3)),
-								result.getInt(4), toWood(result.getString(5)), toWood(result.getString(6)))));
+				String str ="  We have a " +
+						result.getString(1) + " " + result.getString(2) + " " +
+						result.getString(3) + " guitar:\n     " +
+						result.getString(6) + " back and sides,\n     " +
+						result.getString(5) + " top.\n  You can have it for only $" +
+						result.getString(7) + "!\n  ----";
+				list.add(str);
+				
 //
 //				result.getString(1);// builder
 //				result.getString(2);// model
@@ -89,10 +113,14 @@ public class DB {
 //				result.getDouble(7);// price
 //				result.getString(8);// serialNumber
 			}
+
+		} catch (NullPointerException e) {
+			System.out.println("error Query에 암것도 없음");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return temp;
+		System.out.println(list);
+		return list;
 	}
 
 	public void Close() {
