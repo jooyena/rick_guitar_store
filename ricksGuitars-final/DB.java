@@ -43,20 +43,20 @@ public class DB {
 		}
 	}
 
-	public void Open() {
-		try {
-
-			Class.forName("com.mysql.cj.jdbc.Driver");
-
-			String url = "jdbc:mysql://localhost/rick_store?serverTimezone=UTC";
-			conn = DriverManager.getConnection(url, "root", "125710");
-
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로딩 실패");
-		} catch (SQLException e) {
-			System.out.println("에러: " + e);
-		}
-	}
+//	public void Open() {
+//		try {
+//
+//			Class.forName("com.mysql.cj.jdbc.Driver");
+//
+//			String url = "jdbc:mysql://localhost/rick_store?serverTimezone=UTC";
+//			conn = DriverManager.getConnection(url, "root", "125710");
+//
+//		} catch (ClassNotFoundException e) {
+//			System.out.println("드라이버 로딩 실패");
+//		} catch (SQLException e) {
+//			System.out.println("에러: " + e);
+//		}
+//	}
 
 	public void Insert(Guitar guitar) {
 		String sql = "INSERT INTO rick_store VALUES(?,?,?,?,?,?,?,?)";
@@ -90,32 +90,33 @@ public class DB {
 //		System.out.println(sql);
 		try {
 			state = conn.prepareStatement(sql);
-			
+
 			ResultSet result = state.executeQuery(sql);
-
-
-			while (result.next()) {
-				String str ="  We have a " +
-						result.getString(1) + " " + result.getString(2) + " " +
-						result.getString(3) + " guitar:\n     " +
-						result.getString(6) + " back and sides,\n     " +
-						result.getString(5) + " top.\n  You can have it for only $" +
-						result.getString(7) + "!\n  ----";
-				list.add(str);
-				
-//
-//				result.getString(1);// builder
-//				result.getString(2);// model
-//				result.getString(3);// type
-//				result.getInt(4);// numString
-//				result.getString(5);// topWood
-//				result.getString(6);// BackWood
-//				result.getDouble(7);// price
-//				result.getString(8);// serialNumber
+			
+			if (result.next()) {
+				do {
+					String str = "  We have a " + result.getString(1) + " " + result.getString(2) + " "
+							+ result.getString(3) + " guitar:\n     " + result.getString(6) + " back and sides,\n     "
+							+ result.getString(5) + " top.\n  You can have it for only $" + result.getString(7)
+							+ "!\n  ----";
+					list.add(str);
+//					result.getString(1);// builder
+//					result.getString(2);// model
+//					result.getString(3);// type
+//					result.getInt(4);// numString
+//					result.getString(5);// topWood
+//					result.getString(6);// BackWood
+//					result.getDouble(7);// price
+//					result.getString(8);// serialNumber
+				}while (result.next());
+			}else {
+				return null;
 			}
 
+
 		} catch (NullPointerException e) {
-			System.out.println("error Query에 암것도 없음");
+
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
